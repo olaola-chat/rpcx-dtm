@@ -7,9 +7,9 @@
 
 Store: # specify which engine to store trans status
   Driver: 'mysql'
-  Host: 'localhost'
+  Host: '192.168.1.24'
   User: 'root'
-  Password: ''
+  Password: 'root'
   Port: 3306
   Db: 'dtm'
 
