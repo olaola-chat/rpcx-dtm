@@ -2,6 +2,10 @@
 all: fmt lint test_redis
 .PHONY: all
 
+.PHONY server:
+server:
+	@go build -o bin/dtm-server main.go
+
 fmt:
 	@gofmt -s -w ./
 
