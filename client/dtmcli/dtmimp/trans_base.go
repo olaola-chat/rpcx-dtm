@@ -10,7 +10,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -19,6 +19,10 @@ import (
 
 	"github.com/go-resty/resty/v2"
 )
+
+func getRpcXMessageID() string {
+	return fmt.Sprintf("%d%d", time.Now().Unix()&0x7FFFFFFF, rand.New(rand.NewSource(time.Now().UnixNano())).Int31())
+}
 
 // BranchIDGen used to generate a sub branch id
 type BranchIDGen struct {
@@ -67,7 +71,7 @@ type TransBase struct {
 	Steps       []map[string]string `json:"steps,omitempty"`    // use in MSG/SAGA
 	Payloads    []string            `json:"payloads,omitempty"` // used in MSG/SAGA
 	BinPayloads [][]byte            `json:"-"`
-	BranchIDGen `json:"-"`          // used in XA/TCC
+	BranchIDGen `json:"-"`                     // used in XA/TCC
 	Op          string              `json:"-"` // used in XA/TCC
 
 	QueryPrepared  string `json:"query_prepared,omitempty"` // used in MSG
@@ -179,7 +183,7 @@ func TransRequestBranchWithRpcX(t *TransBase, method string, body interface{}, b
 		headers = make(map[string]string)
 	}
 	headers["Content-Type"] = "application/rpcx"
-	headers["X-RPCX-MessageID"] = uuid.New().String()
+	headers["X-RPCX-MessageID"] = getRpcXMessageID()
 	headers["X-RPCX-MesssageType"] = "0"
 	headers["X-RPCX-SerializeType"] = "1"
 	headers["Content-Length"] = strconv.Itoa(len(MustMarshalString(body)))
