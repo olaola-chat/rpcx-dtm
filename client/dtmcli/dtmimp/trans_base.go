@@ -10,8 +10,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -154,6 +156,38 @@ func TransRequestBranch(t *TransBase, method string, body interface{}, branchID 
 		SetBody(body).
 		SetQueryParams(query).
 		SetHeaders(t.BranchHeaders).
+		Execute(method, url)
+	return resp, err
+}
+
+func TransRequestBranchWithRpcX(t *TransBase, method string, body interface{}, branchID string, op string, url string) (*resty.Response, error) {
+	if url == "" {
+		return nil, nil
+	}
+	query := map[string]string{
+		"dtm":        t.Dtm,
+		"gid":        t.Gid,
+		"branch_id":  branchID,
+		"trans_type": t.TransType,
+		"op":         op,
+	}
+	if t.TransType == "xa" { // xa trans will add notify_url
+		query["phase2_url"] = url
+	}
+	headers := t.BranchHeaders
+	if headers == nil {
+		headers = make(map[string]string)
+	}
+	headers["Content-Type"] = "application/rpcx"
+	headers["X-RPCX-MessageID"] = uuid.New().String()
+	headers["X-RPCX-MesssageType"] = "0"
+	headers["X-RPCX-SerializeType"] = "1"
+	headers["Content-Length"] = strconv.Itoa(len(MustMarshalString(body)))
+
+	resp, err := GetRestyClient2(0).R().
+		SetBody(body).
+		SetQueryParams(query).
+		SetHeaders(headers).
 		Execute(method, url)
 	return resp, err
 }

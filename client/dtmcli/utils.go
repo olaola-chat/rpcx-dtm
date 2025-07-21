@@ -72,3 +72,11 @@ func requestBranch(t *dtmimp.TransBase, method string, body interface{}, branchI
 	}
 	return resp, err
 }
+
+func requestBranchWithRpcX(t *dtmimp.TransBase, method string, body interface{}, branchID string, op string, url string) (*resty.Response, error) {
+	resp, err := dtmimp.TransRequestBranchWithRpcX(t, method, body, branchID, op, url)
+	if err == nil {
+		err = HTTPResp2DtmError(resp)
+	}
+	return resp, err
+}
