@@ -81,3 +81,8 @@ func (x *Xa) CallBranch(body interface{}, url string) (*resty.Response, error) {
 	branchID := x.NewSubBranchID()
 	return requestBranch(&x.TransBase, "POST", body, branchID, dtmimp.OpAction, url)
 }
+
+func (x *Xa) CallRpcXBranch(body interface{}, url string) (*resty.Response, error) {
+	branchID := x.NewSubBranchID()
+	return requestBranchWithRpcX(&x.TransBase, "POST", body, branchID, dtmimp.OpAction, url)
+}

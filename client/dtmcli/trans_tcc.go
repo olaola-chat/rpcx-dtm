@@ -73,3 +73,17 @@ func (t *Tcc) CallBranch(body interface{}, tryURL string, confirmURL string, can
 	}
 	return requestBranch(&t.TransBase, "POST", body, branchID, dtmimp.OpTry, tryURL)
 }
+
+func (t *Tcc) CallRpcXBranch(body interface{}, tryURL string, confirmURL string, cancelURL string) (*resty.Response, error) {
+	branchID := t.NewSubBranchID()
+	err := dtmimp.TransRegisterBranch(&t.TransBase, map[string]string{
+		"data":           dtmimp.MustMarshalString(body),
+		"branch_id":      branchID,
+		dtmimp.OpConfirm: confirmURL,
+		dtmimp.OpCancel:  cancelURL,
+	}, "registerBranch")
+	if err != nil {
+		return nil, err
+	}
+	return requestBranchWithRpcX(&t.TransBase, "POST", body, branchID, dtmimp.OpTry, tryURL)
+}
