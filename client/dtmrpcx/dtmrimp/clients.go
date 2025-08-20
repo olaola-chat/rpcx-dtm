@@ -10,8 +10,24 @@ import (
 )
 
 var (
-	xClients sync.Map
+	xClients            sync.Map
+	consulDiscovery     rpcXClient.ServiceDiscovery
+	onceConsulDiscovery sync.Once
 )
+
+func getConsulDiscovery(regAddr, basePath string) rpcXClient.ServiceDiscovery {
+	if consulDiscovery != nil {
+		return consulDiscovery
+	}
+	onceConsulDiscovery.Do(func() {
+		if consulDiscovery == nil {
+			var err error
+			consulDiscovery, err = createServiceDiscovery(regAddr, basePath)
+			dtmimp.E2P(err)
+		}
+	})
+	return consulDiscovery
+}
 
 func createServiceDiscovery(regAddr, basePath string) (rpcXClient.ServiceDiscovery, error) {
 	return rpcXClient.NewConsulDiscoveryTemplate(basePath, []string{regAddr}, nil)
