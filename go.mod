@@ -15,6 +15,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/go-sql-driver/mysql v1.7.0
+	github.com/gogf/gf v1.16.9
 	github.com/lib/pq v1.10.7
 	github.com/lithammer/shortuuid/v3 v3.0.7
 	github.com/onsi/gomega v1.36.2

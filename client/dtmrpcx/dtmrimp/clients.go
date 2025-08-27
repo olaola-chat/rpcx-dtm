@@ -2,10 +2,14 @@ package dtmrimp
 
 import (
 	"errors"
+	"fmt"
 	"github.com/dtm-labs/dtm/client/dtmrpcx/dtmcli"
+	"github.com/dtm-labs/dtm/dtmsvr/config"
+	"net/url"
 	"sync"
 
 	"github.com/dtm-labs/dtm/client/dtmcli/dtmimp"
+	_ "github.com/gogf/gf"
 	rpcXClient "github.com/smallnest/rpcx/client"
 )
 
@@ -15,15 +19,31 @@ var (
 	onceConsulDiscovery sync.Once
 )
 
-func getConsulDiscovery(regAddr, basePath string) rpcXClient.ServiceDiscovery {
-	if consulDiscovery != nil {
-		return consulDiscovery
-	}
+type discoverConfig struct {
+}
+
+func getConsulDiscovery() rpcXClient.ServiceDiscovery {
 	onceConsulDiscovery.Do(func() {
 		if consulDiscovery == nil {
-			var err error
-			consulDiscovery, err = createServiceDiscovery(regAddr, basePath)
-			dtmimp.E2P(err)
+			if consulDiscovery == nil {
+				target := config.Config.MicroService.Target
+				if target == "" {
+					panic("MicroService.Target is not set")
+				}
+				uri, err := url.ParseRequestURI(target)
+				if err != nil {
+					dtmimp.E2P(err)
+				}
+
+				if uri.Scheme != "rpcx" {
+					panic("MicroService.Target must be rpcx://")
+				}
+
+				host, port, path := uri.Hostname(), uri.Port(), uri.Path
+
+				consulDiscovery, err = createServiceDiscovery(fmt.Sprintf("%s:%d", host, port), path)
+				dtmimp.E2P(err)
+			}
 		}
 	})
 	return consulDiscovery
@@ -34,8 +54,8 @@ func createServiceDiscovery(regAddr, basePath string) (rpcXClient.ServiceDiscove
 }
 
 // MustGetDtmRpcXClient 1
-func MustGetDtmRpcXClient(rpcXServer string, discovery rpcXClient.ServiceDiscovery) dtmcli.Client {
-	return dtmcli.NewRpcXClient(MustGetRpcXClient(rpcXServer, discovery))
+func MustGetDtmRpcXClient(rpcXServer string) dtmcli.Client {
+	return dtmcli.NewRpcXClient(MustGetRpcXClient(rpcXServer))
 }
 
 // GetRpcXClient 1
@@ -54,8 +74,8 @@ func GetRpcXClient(rpcXServer string, discov rpcXClient.ServiceDiscovery) (rpcXC
 }
 
 // MustGetRpcXClient 1
-func MustGetRpcXClient(rpcXServer string, discov rpcXClient.ServiceDiscovery) rpcXClient.XClient {
-	cli, err := GetRpcXClient(rpcXServer, discov)
+func MustGetRpcXClient(rpcXServer string) rpcXClient.XClient {
+	cli, err := GetRpcXClient(rpcXServer, getConsulDiscovery())
 	dtmimp.E2P(err)
 	return cli
 }

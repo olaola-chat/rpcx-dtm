@@ -2,11 +2,9 @@ package dtmrimp
 
 import (
 	"context"
-	"github.com/dtm-labs/dtmdriver"
-	"google.golang.org/grpc"
-
 	"github.com/dtm-labs/dtm/client/dtmcli/dtmimp"
 	"github.com/dtm-labs/dtm/client/dtmgrpc/dtmgpb"
+	"github.com/dtm-labs/dtmdriver"
 	"github.com/dtm-labs/logger"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/proto"
@@ -50,7 +48,7 @@ func GetDtmRequest(s *dtmimp.TransBase) *dtmgpb.DtmRequest {
 // DtmRpcXCall make a convenient call to dtm
 func DtmRpcXCall(s *dtmimp.TransBase, operation string) error {
 	reply := emptypb.Empty{}
-	return MustGetRpcXClient(s.Dtm, nil).Call(s.Context, operation, GetDtmRequest(s), &reply)
+	return MustGetRpcXClient(s.Dtm).Call(s.Context, operation, GetDtmRequest(s), &reply)
 }
 
 const dtmpre string = "dtm-"
@@ -136,7 +134,7 @@ func RequestTimeoutNewContext(ctx context.Context, requestTimeout int64) context
 	return context.WithValue(ctx, requestTimeoutKey{}, requestTimeout)
 }
 
-func InvokeBranch(t *dtmimp.TransBase, isRaw bool, msg proto.Message, url string, reply interface{}, branchID string, op string, opts ...grpc.CallOption) error {
+func InvokeBranch(t *dtmimp.TransBase, isRaw bool, msg proto.Message, url string, reply interface{}, branchID string, op string) error {
 	server, method, err := dtmdriver.GetDriver().ParseServerMethod(url)
 	if err != nil {
 		return err
@@ -146,5 +144,5 @@ func InvokeBranch(t *dtmimp.TransBase, isRaw bool, msg proto.Message, url string
 	if t.TransType == "xa" { // xa branch need additional phase2_url
 		ctx = metadata.AppendToOutgoingContext(ctx, Map2Kvs(map[string]string{dtmpre + "phase2_url": url})...)
 	}
-	return MustGetRpcXClient(server, isRaw).Call(ctx, method, msg, reply, opts...)
+	return MustGetRpcXClient(server).Call(ctx, method, msg, reply)
 }
