@@ -93,6 +93,7 @@ type Type struct {
 	HTTPPort                      int64            `yaml:"HttpPort" default:"36789"`
 	GrpcPort                      int64            `yaml:"GrpcPort" default:"36790"`
 	JSONRPCPort                   int64            `yaml:"JsonRpcPort" default:"36791"`
+	RpcXPort                      int64            `yaml:"RpcXPort" default:"36792"`
 	MicroService                  MicroService     `yaml:"MicroService"`
 	HTTPMicroService              HTTPMicroService `yaml:"HttpMicroService"`
 	UpdateBranchSync              int64            `yaml:"UpdateBranchSync"`
@@ -104,6 +105,7 @@ type Type struct {
 	AlertRetryLimit               int64            `yaml:"AlertRetryLimit" default:"3"`
 	AlertWebHook                  string           `yaml:"AlertWebHook"`
 	AdminBasePath                 string           `yaml:"AdminBasePath"`
+	RunMode                       string           `yaml:"RunMode" default:"prod"`
 }
 
 // Config config

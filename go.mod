@@ -16,9 +16,12 @@ require (
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gogf/gf v1.16.9
+	github.com/gotomicro/ego v1.1.5
+	github.com/juju/ratelimit v1.0.2
 	github.com/lib/pq v1.10.7
 	github.com/lithammer/shortuuid/v3 v3.0.7
 	github.com/onsi/gomega v1.36.2
+	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.19.1
 	github.com/redis/go-redis/v9 v9.7.0
@@ -36,6 +39,13 @@ require (
 	gorm.io/driver/postgres v1.2.1
 	gorm.io/driver/sqlserver v1.1.2
 	gorm.io/gorm v1.22.2
+)
+
+require (
+	github.com/julienschmidt/httprouter v1.3.0 // indirect
+	github.com/kavu/go_reuseport v1.5.0 // indirect
+	github.com/rs/cors v1.7.0 // indirect
+	github.com/soheilhy/cmux v0.1.5 // indirect
 )
 
 require (
@@ -95,7 +105,6 @@ require (
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/pprof v0.0.0-20250128161936-077ca0a936bf // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/gotomicro/ego v1.1.5 // indirect
 	github.com/gotomicro/ego-component/eetcd v0.2.3 // indirect
 	github.com/gotomicro/ego-component/ek8s v0.2.3 // indirect
 	github.com/gotomicro/logrotate v0.0.0-20211108034117-46d53eedc960 // indirect
@@ -110,6 +119,7 @@ require (
 	github.com/hashicorp/go-rootcerts v1.0.2 // indirect
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
 	github.com/hashicorp/serf v0.10.1 // indirect
+	github.com/influxdata/influxdb1-client v0.0.0-20200827194710-b269163b24ab // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.14.3 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
@@ -124,7 +134,6 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/jpillora/backoff v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/juju/ratelimit v1.0.2 // indirect
 	github.com/klauspost/compress v1.15.14 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
 	github.com/klauspost/reedsolomon v1.12.4 // indirect
@@ -150,7 +159,6 @@ require (
 	github.com/nxadm/tail v1.4.8 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/ginkgo/v2 v2.22.2 // indirect
-	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/polarismesh/grpc-go-polaris v1.2.1-0.20220306155244-f0b83ba62878 // indirect
@@ -159,12 +167,14 @@ require (
 	github.com/prometheus/common v0.48.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/quic-go/quic-go v0.49.0 // indirect
+	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/rpcxio/libkv v0.5.1-0.20210420120011-1fceaedca8a5 // indirect
 	github.com/rubyist/circuitbreaker v2.2.1+incompatible // indirect
 	github.com/samuel/go-zookeeper v0.0.0-20201211165307-7117e9ea2414 // indirect
 	github.com/smallnest/quick v0.2.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
+	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/templexxx/cpufeat v0.0.0-20180724012125-cef66df7f161 // indirect
 	github.com/templexxx/xor v0.0.0-20191217153810-f85b25db303b // indirect
 	github.com/tjfoc/gmsm v1.4.1 // indirect
@@ -177,7 +187,6 @@ require (
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/xtaci/kcp-go v5.4.20+incompatible // indirect
-	github.com/xtaci/lossyconn v0.0.0-20200209145036-adba10fffc37 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
 	github.com/zeromicro/go-zero v1.4.4 // indirect
 	github.com/zeromicro/zero-contrib/zrpc/registry/consul v0.0.0-20230212061721-86dbe4a9e613 // indirect
@@ -224,5 +233,6 @@ require (
 retract v1.18.7
 
 // replace github.com/dtm-labs/dtmdriver v0.0.2 => /Users/wangxi/dtm/dtmdriver
+replace github.com/smallnest/rpcx => github.com/olaola-chat/rpcx v0.1.0-alpha
 
 // replace github.com/dtm-labs/dtmdriver-http => /Users/wangxi/dtm/dtmdriver-http-nacos

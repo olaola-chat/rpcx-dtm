@@ -14,34 +14,49 @@ import (
 )
 
 var (
-	xClients            sync.Map
-	consulDiscovery     rpcXClient.ServiceDiscovery
-	onceConsulDiscovery sync.Once
+	xClients             sync.Map
+	consulDiscovery      rpcXClient.ServiceDiscovery
+	onceConsulDiscovery  sync.Once
+	consulConfig         *ConsulConfig
+	onceLoadConsulConfig sync.Once
 )
 
 type discoverConfig struct {
 }
 
-func getConsulDiscovery() rpcXClient.ServiceDiscovery {
+type ConsulConfig struct {
+	Address string
+	Prefix  string
+}
+
+func GetConsulConfig() *ConsulConfig {
+	if consulConfig != nil {
+		return consulConfig
+	}
+	onceConsulDiscovery.Do(func() {
+		if consulDiscovery == nil {
+			target := config.Config.MicroService.Target
+			targetUrl, err := url.Parse(target)
+			dtmimp.E2P(err)
+			if targetUrl.Scheme != "rpcx" {
+				dtmimp.E2P(fmt.Errorf("unknown scheme: %s", targetUrl.Scheme))
+			}
+			consulConfig = &ConsulConfig{
+				Address: fmt.Sprintf(fmt.Sprintf("%s:%s", targetUrl.Host, targetUrl.Port())),
+				Prefix:  targetUrl.Path,
+			}
+		}
+	})
+	return consulConfig
+}
+
+func GetConsulDiscovery() rpcXClient.ServiceDiscovery {
+	cc := GetConsulConfig()
 	onceConsulDiscovery.Do(func() {
 		if consulDiscovery == nil {
 			if consulDiscovery == nil {
-				target := config.Config.MicroService.Target
-				if target == "" {
-					panic("MicroService.Target is not set")
-				}
-				uri, err := url.ParseRequestURI(target)
-				if err != nil {
-					dtmimp.E2P(err)
-				}
-
-				if uri.Scheme != "rpcx" {
-					panic("MicroService.Target must be rpcx://")
-				}
-
-				host, port, path := uri.Hostname(), uri.Port(), uri.Path
-
-				consulDiscovery, err = createServiceDiscovery(fmt.Sprintf("%s:%d", host, port), path)
+				var err error
+				consulDiscovery, err = createServiceDiscovery(cc.Address, cc.Prefix)
 				dtmimp.E2P(err)
 			}
 		}
@@ -75,7 +90,7 @@ func GetRpcXClient(rpcXServer string, discov rpcXClient.ServiceDiscovery) (rpcXC
 
 // MustGetRpcXClient 1
 func MustGetRpcXClient(rpcXServer string) rpcXClient.XClient {
-	cli, err := GetRpcXClient(rpcXServer, getConsulDiscovery())
+	cli, err := GetRpcXClient(rpcXServer, GetConsulDiscovery())
 	dtmimp.E2P(err)
 	return cli
 }

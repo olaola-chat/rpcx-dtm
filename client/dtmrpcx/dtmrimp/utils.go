@@ -2,6 +2,7 @@ package dtmrimp
 
 import (
 	"context"
+	"fmt"
 	"github.com/dtm-labs/dtm/client/dtmcli/dtmimp"
 	"github.com/dtm-labs/dtm/client/dtmgrpc/dtmgpb"
 	"github.com/dtm-labs/dtmdriver"
@@ -9,6 +10,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"net"
 )
 
 // MustProtoMarshal must version of proto.Marshal
@@ -145,4 +147,19 @@ func InvokeBranch(t *dtmimp.TransBase, isRaw bool, msg proto.Message, url string
 		ctx = metadata.AppendToOutgoingContext(ctx, Map2Kvs(map[string]string{dtmpre + "phase2_url": url})...)
 	}
 	return MustGetRpcXClient(server).Call(ctx, method, msg, reply)
+}
+
+func LocalIPv4s() (string, error) {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return "", err
+	}
+
+	for _, a := range addrs {
+		if ipnet, ok := a.(*net.IPNet); ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil {
+			return ipnet.IP.String(), nil
+		}
+	}
+
+	return "", fmt.Errorf("empty found in InterfaceAddrs")
 }

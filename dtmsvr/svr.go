@@ -9,7 +9,8 @@ package dtmsvr
 import (
 	"context"
 	"fmt"
-	"net"
+	"github.com/dtm-labs/dtm/client/dtmcli/dtmimp"
+	"github.com/dtm-labs/dtm/client/dtmrpcx/dtmrimp"
 	"time"
 
 	"github.com/dtm-labs/dtm/client/dtmgrpc"
@@ -17,13 +18,11 @@ import (
 
 	"github.com/dtm-labs/dtm/client/dtmcli"
 	"github.com/dtm-labs/dtm/client/dtmgrpc/dtmgimp"
-	"github.com/dtm-labs/dtm/client/dtmgrpc/dtmgpb"
 	"github.com/dtm-labs/dtm/dtmutil"
 	"github.com/dtm-labs/dtmdriver"
 	"github.com/dtm-labs/logger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 )
 
@@ -57,15 +56,21 @@ func StartSvr() *gin.Engine {
 	}()
 
 	// start grpc server
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", conf.GrpcPort))
-	logger.FatalIfError(err)
-	s := grpc.NewServer(grpc.ChainUnaryInterceptor(grpcRecover, grpcMetrics, dtmgimp.GrpcServerLog))
-	dtmgpb.RegisterDtmServer(s, &dtmServer{})
-	reflection.Register(s)
-	logger.Infof("grpc listening at %v", lis.Addr())
+	// lis, err := net.Listen("tcp", fmt.Sprintf(":%d", conf.GrpcPort))
+	// logger.FatalIfError(err)
+	// s := grpc.NewServer(grpc.ChainUnaryInterceptor(grpcRecover, grpcMetrics, dtmgimp.GrpcServerLog))
+	// dtmgpb.RegisterDtmServer(s, &dtmServer{})
+	// reflection.Register(s)
+	// logger.Infof("grpc listening at %v", lis.Addr())
+	// go func() {
+	// 	err := s.Serve(lis)
+	// 	logger.FatalIfError(err)
+	// }()
+	rpcx := NewRpcXServer("Dtm")
+	localIp, err := dtmrimp.LocalIPv4s()
+	dtmimp.E2P(err)
 	go func() {
-		err := s.Serve(lis)
-		logger.FatalIfError(err)
+		rpcx.Serve(fmt.Sprintf("%s:%d", localIp, conf.RpcXPort))
 	}()
 
 	for i := 0; i < int(conf.UpdateBranchAsyncGoroutineNum); i++ {
