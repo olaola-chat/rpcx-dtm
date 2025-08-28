@@ -66,11 +66,11 @@ func StartSvr() *gin.Engine {
 	// 	err := s.Serve(lis)
 	// 	logger.FatalIfError(err)
 	// }()
-	rpcx := NewRpcXServer("Dtm")
+	rpcX := NewRpcXServer("Dtm")
 	localIp, err := dtmrimp.LocalIPv4s()
 	dtmimp.E2P(err)
 	go func() {
-		rpcx.Serve(fmt.Sprintf("%s:%d", localIp, conf.RpcXPort))
+		rpcX.Serve(fmt.Sprintf("%s:%d", localIp, conf.RpcXPort))
 	}()
 
 	for i := 0; i < int(conf.UpdateBranchAsyncGoroutineNum); i++ {
