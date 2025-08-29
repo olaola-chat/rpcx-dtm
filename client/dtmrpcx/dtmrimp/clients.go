@@ -38,7 +38,7 @@ func GetConsulConfig() *ConsulConfig {
 			target := config.Config.MicroService.Target
 			targetUrl, err := url.Parse(target)
 			dtmimp.E2P(err)
-			if targetUrl.Scheme != "rpcx" {
+			if targetUrl.Scheme != "consul" {
 				dtmimp.E2P(fmt.Errorf("unknown scheme: %s", targetUrl.Scheme))
 			}
 			consulConfig = &ConsulConfig{

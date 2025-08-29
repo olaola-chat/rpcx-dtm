@@ -43,10 +43,10 @@ Consul :
   Address: 127.0.0.1:8500
   Prefix: /slp
 
-#MicroService: # gRPC/HTTP based microservice config
-#  Driver: 'dtm-driver-rpcx' # name of the driver to handle register/discover
-#  Target: 'consul://localhost:8500/slp' # register dtm server to this url
-#  EndPoint: 'localhost:36790'
+MicroService: # gRPC/HTTP based microservice config
+  Driver: 'dtm-driver-rpcx' # name of the driver to handle register/discover
+  Target: 'consul://localhost:8500/slp' # register dtm server to this url
+  EndPoint: 'localhost:36790'
 
 ### the unit of following configurations is second
 # TransCronInterval: 3 # the interval to poll unfinished global transaction for every dtm process
