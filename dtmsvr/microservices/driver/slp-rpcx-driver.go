@@ -37,6 +37,7 @@ func (srd *slpRpcxDriver) ParseServerMethod(uri string) (server string, method s
 	if err != nil {
 		return "", "", err
 	}
+
 	paths := strings.Split(uriObj.Path, "/")
 	pathList := make([]string, 0)
 	for _, path := range paths {
