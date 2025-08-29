@@ -9,6 +9,10 @@ import (
 
 const (
 	DriverName = "dtm-driver-slp"
+	kindEtcd   = "etcd"
+	kindDiscov = "discov"
+	kindConsul = "consul"
+	kindNacos  = "nacos"
 )
 
 type slpRpcxDriver struct {
@@ -29,33 +33,25 @@ func (srd *slpRpcxDriver) RegisterAddrResolver() {}
 func (srd *slpRpcxDriver) RegisterService(target string, endpoint string) error { return nil }
 
 func (srd *slpRpcxDriver) ParseServerMethod(uri string) (server string, method string, err error) {
-	if !strings.Contains(uri, "//") { // 处理无scheme的情况，如果您没有直连，可以不处理
-		sep := strings.IndexByte(uri, '/')
-		if sep == -1 {
-			return "", "", fmt.Errorf("bad url: '%s'. no '/' found", uri)
-		}
-		return uri[:sep], uri[sep:], nil
-
-	}
-	//resolve gozero consul wait=xx url.Parse no standard
-	if (strings.Contains(uri, kindConsul) || strings.Contains(uri, kindNacos)) && strings.Contains(uri, "?") {
-		tmp := strings.Split(uri, "?")
-		sep := strings.IndexByte(tmp[1], '/')
-		if sep == -1 {
-			return "", "", fmt.Errorf("bad url: '%s'. no '/' found", uri)
-		}
-		uri = tmp[0] + tmp[1][sep:]
-	}
-
-	u, err := url.Parse(uri)
+	uriObj, err := url.Parse(uri)
 	if err != nil {
-		return "", "", nil
+		return "", "", err
 	}
-	index := strings.IndexByte(u.Path[1:], '/') + 1
+	paths := strings.Split(uriObj.Path, "/")
+	pathList := make([]string, 0)
+	for _, path := range paths {
+		if path != "" {
+			pathList = append(pathList, path)
+		}
+	}
 
-	return u.Scheme + "://" + u.Host + u.Path[:index], u.Path[index:], nil
+	if len(pathList) < 2 {
+		return "", "", fmt.Errorf("invalid uri: %s", uri)
+	}
+
+	return pathList[0], pathList[1], nil
 }
 
 func init() {
-	dtmdriver.Register(&zeroDriver{})
+	dtmdriver.Register(&slpRpcxDriver{})
 }
