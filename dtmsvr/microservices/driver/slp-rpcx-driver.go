@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	DriverName = "dtm-driver-slp"
+	DriverName = "dtm-driver-rpcx"
 	kindEtcd   = "etcd"
 	kindDiscov = "discov"
 	kindConsul = "consul"
@@ -20,7 +20,7 @@ type slpRpcxDriver struct {
 
 // GetName return the name of the driver
 func (srd *slpRpcxDriver) GetName() string {
-	return ""
+	return DriverName
 }
 
 // RegisterAddrResolver will be called when driver used
