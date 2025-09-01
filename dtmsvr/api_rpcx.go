@@ -36,6 +36,7 @@ func (s *DtmRpcXServer) Serve(addr string) {
 	s.impl.Plugins.Add(dtmrimp.OpenTracingPlugin{})
 	cc := dtmrimp.GetConsulConfig()
 
+	logger.Infof("starting dtm rpcx server at %s, prefix = %s", cc.Address, cc.Prefix)
 	discover := &serverplugin.ConsulRegisterPlugin{
 		ServiceAddress: fmt.Sprintf("tcp@%s", s.addr),
 		ConsulServers:  []string{cc.Address},
