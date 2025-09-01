@@ -33,7 +33,7 @@ func GetConsulConfig() *ConsulConfig {
 	if consulConfig != nil {
 		return consulConfig
 	}
-	onceConsulDiscovery.Do(func() {
+	onceLoadConsulConfig.Do(func() {
 		if consulDiscovery == nil {
 			target := config.Config.MicroService.Target
 			targetUrl, err := url.Parse(target)
