@@ -14,7 +14,6 @@ import (
 	"github.com/dtm-labs/dtmdriver"
 	"time"
 
-	_ "github.com/dtm-labs/client/"
 	"github.com/dtm-labs/dtm/client/dtmgrpc"
 	"github.com/gin-gonic/gin"
 
