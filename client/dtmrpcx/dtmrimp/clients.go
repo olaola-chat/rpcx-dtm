@@ -42,7 +42,7 @@ func GetConsulConfig() *ConsulConfig {
 				dtmimp.E2P(fmt.Errorf("unknown scheme: %s", targetUrl.Scheme))
 			}
 			consulConfig = &ConsulConfig{
-				Address: fmt.Sprintf(fmt.Sprintf("%s:%s", targetUrl.Host, targetUrl.Port())),
+				Address: fmt.Sprintf(fmt.Sprintf("%s", targetUrl.Host)),
 				Prefix:  targetUrl.Path,
 			}
 		}
