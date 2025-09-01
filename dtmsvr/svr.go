@@ -83,6 +83,7 @@ func StartSvr() *gin.Engine {
 	err = dtmdriver.Use(conf.MicroService.Driver)
 	logger.FatalIfError(err)
 	logger.Infof("RegisterService: %s", conf.MicroService.Driver)
+	logger.Infof("MicroService:%#v", conf.MicroService)
 	err = dtmdriver.GetDriver().RegisterService(conf.MicroService.Target, conf.MicroService.EndPoint)
 	logger.FatalIfError(err)
 	return app
