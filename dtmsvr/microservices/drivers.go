@@ -1,6 +1,7 @@
 package microservices
 
 import (
+	_ "github.com/dtm-labs/dtm/dtmsvr/microservices/driver"
 	// load the microserver drivers
 	_ "github.com/dtm-labs/dtmdriver-dapr"
 	_ "github.com/dtm-labs/dtmdriver-ego"
