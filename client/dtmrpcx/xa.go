@@ -7,6 +7,7 @@ import (
 	"github.com/dtm-labs/dtm/client/dtmcli/dtmimp"
 	"github.com/dtm-labs/dtm/client/dtmgrpc/dtmgimp"
 	"github.com/dtm-labs/dtm/client/dtmgrpc/dtmgpb"
+	"github.com/dtm-labs/dtm/client/dtmrpcx/dtmrimp"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/proto"
@@ -28,7 +29,7 @@ type XaRpcX struct {
 // XaRpcXFromRequest construct xa info from request
 func XaRpcXFromRequest(ctx context.Context) (*XaRpcX, error) {
 	xa := &XaRpcX{
-		TransBase: *dtmgimp.TransBaseFromRpcX(ctx),
+		TransBase: *dtmrimp.TransBaseFromRpcX(ctx),
 	}
 	xa.Phase2URL = dtmgimp.GetDtmMetaFromContext(ctx, "phase2_url")
 	if xa.Gid == "" || xa.BranchID == "" || xa.Op == "" {
